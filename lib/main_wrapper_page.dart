@@ -5,25 +5,20 @@ import 'package:flutter/material.dart';
 
 class MainWrapperPage extends StatefulWidget {
   const MainWrapperPage({super.key});
-  static const String id =
-      "/main_wrapper_page"; // This will be your new initial route
+  static const String id = "/main_wrapper_page";
 
   @override
   State<MainWrapperPage> createState() => _MainWrapperPageState();
 }
 
 class _MainWrapperPageState extends State<MainWrapperPage> {
-  int _selectedIndex = 0; // Index for the selected tab in BottomNavigationBar
-  late PageController _pageController; // Controller to manage page transitions
+  int _selectedIndex = 0;
+  late PageController _pageController;
 
-  // List of pages to be displayed in the BottomNavigationBar
   final List<Widget> _pages = [
     const HomePage(),
     const HistoryPage(),
     const ProfilePage(),
-
-    // const HistoryPage(),
-    // const StatisticPage(),
   ];
 
   @override

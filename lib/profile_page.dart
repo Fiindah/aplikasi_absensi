@@ -11,71 +11,73 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Column(
-              children: [
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/background.png"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 100),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                    'https://via.placeholder.com/150',
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Nama Peserta",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Nomer Peserta Pelatihan",
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                ),
-                SizedBox(height: 100),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.person, color: Colors.blue),
-                        title: const Text('Ubah Profil'),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 12),
-                        onTap: () {},
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(children: [buildBackground(), buildProfile()]),
+      ),
+    );
+  }
 
-                      const Divider(indent: 16, endIndent: 16), // Garis pemisah
-                      ListTile(
-                        leading: const Icon(Icons.lock, color: Colors.orange),
-                        title: const Text('Ubah Kata Sandi'),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 12),
-                        onTap: () {},
-                      ),
-                      const Divider(indent: 16, endIndent: 16), // Garis pemisah
-                      ListTile(
-                        leading: const Icon(Icons.logout, color: Colors.red),
-                        title: const Text('Keluar'),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 12),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+  Container buildBackground() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/background.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  SafeArea buildProfile() {
+    return SafeArea(
+      child: Center(
+        child: Column(
+          children: [
+            SizedBox(height: 100),
+            CircleAvatar(radius: 50, backgroundColor: Colors.blue),
+            SizedBox(height: 10),
+            Text(
+              "Nama Peserta",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
+            Text(
+              "Nomer Peserta Pelatihan",
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+            SizedBox(height: 100),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.person, color: Colors.blue),
+                    title: const Text('Ubah Profil'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 12),
+                    onTap: () {},
+                  ),
+
+                  const Divider(indent: 16, endIndent: 16), // Garis pemisah
+                  ListTile(
+                    leading: const Icon(Icons.lock, color: Colors.orange),
+                    title: const Text('Ubah Kata Sandi'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 12),
+                    onTap: () {},
+                  ),
+                  const Divider(indent: 16, endIndent: 16), // Garis pemisah
+                  ListTile(
+                    leading: const Icon(Icons.logout, color: Colors.red),
+                    title: const Text('Keluar'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 12),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
