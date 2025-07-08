@@ -1,5 +1,7 @@
+import 'package:aplikasi_absensi/constant/app_color.dart';
 import 'package:aplikasi_absensi/history_page.dart';
-import 'package:aplikasi_absensi/home_page.dart';
+import 'package:aplikasi_absensi/maps_page.dart';
+import 'package:aplikasi_absensi/pages/home_screen.dart';
 import 'package:aplikasi_absensi/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +18,9 @@ class _MainWrapperPageState extends State<MainWrapperPage> {
   late PageController _pageController;
 
   final List<Widget> _pages = [
-    const HomePage(),
+    const HomeScreen(),
     const HistoryPage(),
+    const MapsPage(),
     const ProfilePage(),
   ];
 
@@ -60,14 +63,15 @@ class _MainWrapperPageState extends State<MainWrapperPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.alarm), label: 'Riwayat'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey.shade400,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.myblue2,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
       ),
