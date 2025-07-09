@@ -1,136 +1,76 @@
-// lib/models/login_response_model.dart
-import 'package:aplikasi_absensi/models/user_model.dart'; // Pastikan path ini benar
-
-class LoginResponse {
-  final String message;
-  final LoginData? data; // Nullable because data might be null on error
-
-  LoginResponse({required this.message, this.data});
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      message: json['message'],
-      data: json['data'] != null ? LoginData.fromJson(json['data']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'message': message, 'data': data?.toJson()};
-  }
-}
-
-class LoginData {
-  final String token;
-  final User user;
-
-  LoginData({required this.token, required this.user});
-
-  factory LoginData.fromJson(Map<String, dynamic> json) {
-    return LoginData(token: json['token'], user: User.fromJson(json['user']));
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'token': token, 'user': user.toJson()};
-  }
-}
-
 // // To parse this JSON data, do
 // //
-// //     final loginResponse = loginResponseFromJson(jsonString);
+// //     final profileResponse = profileResponseFromJson(jsonString);
 
 // import 'dart:convert';
 
-// LoginResponse loginResponseFromJson(String str) =>
-//     LoginResponse.fromJson(json.decode(str));
+// ProfileResponse profileResponseFromJson(String str) =>
+//     ProfileResponse.fromJson(json.decode(str));
 
-// String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
+// String profileResponseToJson(ProfileResponse data) =>
+//     json.encode(data.toJson());
 
-// class LoginResponse {
+// class ProfileResponse {
 //   String? message;
 //   Data? data;
 
-//   LoginResponse({this.message, this.data});
+//   ProfileResponse({this.message, this.data});
 
-//   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-//     message: json["message"],
-//     data: json["data"] == null ? null : Data.fromJson(json["data"]),
-//   );
+//   factory ProfileResponse.fromJson(Map<String, dynamic> json) =>
+//       ProfileResponse(
+//         message: json["message"],
+//         data: json["data"] == null ? null : Data.fromJson(json["data"]),
+//       );
 
 //   Map<String, dynamic> toJson() => {"message": message, "data": data?.toJson()};
 // }
 
 // class Data {
-//   String? token;
-//   User? user;
-
-//   Data({this.token, this.user});
-
-//   factory Data.fromJson(Map<String, dynamic> json) => Data(
-//     token: json["token"],
-//     user: json["user"] == null ? null : User.fromJson(json["user"]),
-//   );
-
-//   Map<String, dynamic> toJson() => {"token": token, "user": user?.toJson()};
-// }
-
-// class User {
 //   int? id;
 //   String? name;
 //   String? email;
-//   dynamic emailVerifiedAt;
-//   String? createdAt;
-//   String? updatedAt;
-//   String? batchId;
-//   String? trainingId;
-//   dynamic jenisKelamin;
-//   dynamic profilePhoto;
+//   String? batchKe;
+//   String? trainingTitle;
 //   Batch? batch;
 //   Training? training;
+//   dynamic jenisKelamin;
+//   dynamic profilePhoto;
 
-//   User({
+//   Data({
 //     this.id,
 //     this.name,
 //     this.email,
-//     this.emailVerifiedAt,
-//     this.createdAt,
-//     this.updatedAt,
-//     this.batchId,
-//     this.trainingId,
-//     this.jenisKelamin,
-//     this.profilePhoto,
+//     this.batchKe,
+//     this.trainingTitle,
 //     this.batch,
 //     this.training,
+//     this.jenisKelamin,
+//     this.profilePhoto,
 //   });
 
-//   factory User.fromJson(Map<String, dynamic> json) => User(
+//   factory Data.fromJson(Map<String, dynamic> json) => Data(
 //     id: json["id"],
 //     name: json["name"],
 //     email: json["email"],
-//     emailVerifiedAt: json["email_verified_at"],
-//     createdAt: json["created_at"],
-//     updatedAt: json["updated_at"],
-//     batchId: json["batch_id"],
-//     trainingId: json["training_id"],
-//     jenisKelamin: json["jenis_kelamin"],
-//     profilePhoto: json["profile_photo"],
+//     batchKe: json["batch_ke"],
+//     trainingTitle: json["training_title"],
 //     batch: json["batch"] == null ? null : Batch.fromJson(json["batch"]),
 //     training:
 //         json["training"] == null ? null : Training.fromJson(json["training"]),
+//     jenisKelamin: json["jenis_kelamin"],
+//     profilePhoto: json["profile_photo"],
 //   );
 
 //   Map<String, dynamic> toJson() => {
 //     "id": id,
 //     "name": name,
 //     "email": email,
-//     "email_verified_at": emailVerifiedAt,
-//     "created_at": createdAt,
-//     "updated_at": updatedAt,
-//     "batch_id": batchId,
-//     "training_id": trainingId,
-//     "jenis_kelamin": jenisKelamin,
-//     "profile_photo": profilePhoto,
+//     "batch_ke": batchKe,
+//     "training_title": trainingTitle,
 //     "batch": batch?.toJson(),
 //     "training": training?.toJson(),
+//     "jenis_kelamin": jenisKelamin,
+//     "profile_photo": profilePhoto,
 //   };
 // }
 

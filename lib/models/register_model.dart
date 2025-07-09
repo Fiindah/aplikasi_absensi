@@ -1,60 +1,72 @@
-// lib/models/login_response_model.dart
 import 'package:aplikasi_absensi/models/user_model.dart'; // Pastikan path ini benar
 
-class LoginResponse {
+class RegisterResponse {
   final String message;
-  final LoginData? data; // Nullable because data might be null on error
+  final RegisterData? data;
+  final Map<String, dynamic>? errors;
 
-  LoginResponse({required this.message, this.data});
+  RegisterResponse({required this.message, this.data, this.errors});
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      message: json['message'],
-      data: json['data'] != null ? LoginData.fromJson(json['data']) : null,
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) {
+    return RegisterResponse(
+      message: json['message'] ?? 'Terjadi kesalahan tidak dikenal',
+      data: json['data'] != null ? RegisterData.fromJson(json['data']) : null,
+      errors: json['errors'], // Ambil field errors jika ada
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'message': message, 'data': data?.toJson()};
+    return {'message': message, 'data': data?.toJson(), 'errors': errors};
   }
 }
 
-class LoginData {
+class RegisterData {
   final String token;
-  final User user;
+  final User user; // Menggunakan model User yang sudah ada
+  final String? profilePhotoUrl; // Field baru untuk URL foto profil
 
-  LoginData({required this.token, required this.user});
+  RegisterData({required this.token, required this.user, this.profilePhotoUrl});
 
-  factory LoginData.fromJson(Map<String, dynamic> json) {
-    return LoginData(token: json['token'], user: User.fromJson(json['user']));
+  factory RegisterData.fromJson(Map<String, dynamic> json) {
+    return RegisterData(
+      token: json['token'],
+      user: User.fromJson(json['user']),
+      profilePhotoUrl: json['profile_photo_url'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'token': token, 'user': user.toJson()};
+    return {
+      'token': token,
+      'user': user.toJson(),
+      'profile_photo_url': profilePhotoUrl,
+    };
   }
 }
 
 // // To parse this JSON data, do
 // //
-// //     final loginResponse = loginResponseFromJson(jsonString);
+// //     final registerResponse = registerResponseFromJson(jsonString);
 
 // import 'dart:convert';
 
-// LoginResponse loginResponseFromJson(String str) =>
-//     LoginResponse.fromJson(json.decode(str));
+// RegisterResponse registerResponseFromJson(String str) =>
+//     RegisterResponse.fromJson(json.decode(str));
 
-// String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
+// String registerResponseToJson(RegisterResponse data) =>
+//     json.encode(data.toJson());
 
-// class LoginResponse {
+// class RegisterResponse {
 //   String? message;
 //   Data? data;
 
-//   LoginResponse({this.message, this.data});
+//   RegisterResponse({this.message, this.data});
 
-//   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-//     message: json["message"],
-//     data: json["data"] == null ? null : Data.fromJson(json["data"]),
-//   );
+//   factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
+//       RegisterResponse(
+//         message: json["message"],
+//         data: json["data"] == null ? null : Data.fromJson(json["data"]),
+//       );
 
 //   Map<String, dynamic> toJson() => {"message": message, "data": data?.toJson()};
 // }
@@ -62,73 +74,75 @@ class LoginData {
 // class Data {
 //   String? token;
 //   User? user;
+//   String? profilePhotoUrl;
 
-//   Data({this.token, this.user});
+//   Data({this.token, this.user, this.profilePhotoUrl});
 
 //   factory Data.fromJson(Map<String, dynamic> json) => Data(
 //     token: json["token"],
 //     user: json["user"] == null ? null : User.fromJson(json["user"]),
+//     profilePhotoUrl: json["profile_photo_url"],
 //   );
 
-//   Map<String, dynamic> toJson() => {"token": token, "user": user?.toJson()};
+//   Map<String, dynamic> toJson() => {
+//     "token": token,
+//     "user": user?.toJson(),
+//     "profile_photo_url": profilePhotoUrl,
+//   };
 // }
 
 // class User {
-//   int? id;
 //   String? name;
 //   String? email;
-//   dynamic emailVerifiedAt;
-//   String? createdAt;
+//   int? batchId;
+//   int? trainingId;
+//   String? jenisKelamin;
+//   String? profilePhoto;
 //   String? updatedAt;
-//   String? batchId;
-//   String? trainingId;
-//   dynamic jenisKelamin;
-//   dynamic profilePhoto;
+//   String? createdAt;
+//   int? id;
 //   Batch? batch;
 //   Training? training;
 
 //   User({
-//     this.id,
 //     this.name,
 //     this.email,
-//     this.emailVerifiedAt,
-//     this.createdAt,
-//     this.updatedAt,
 //     this.batchId,
 //     this.trainingId,
 //     this.jenisKelamin,
 //     this.profilePhoto,
+//     this.updatedAt,
+//     this.createdAt,
+//     this.id,
 //     this.batch,
 //     this.training,
 //   });
 
 //   factory User.fromJson(Map<String, dynamic> json) => User(
-//     id: json["id"],
 //     name: json["name"],
 //     email: json["email"],
-//     emailVerifiedAt: json["email_verified_at"],
-//     createdAt: json["created_at"],
-//     updatedAt: json["updated_at"],
 //     batchId: json["batch_id"],
 //     trainingId: json["training_id"],
 //     jenisKelamin: json["jenis_kelamin"],
 //     profilePhoto: json["profile_photo"],
+//     updatedAt: json["updated_at"],
+//     createdAt: json["created_at"],
+//     id: json["id"],
 //     batch: json["batch"] == null ? null : Batch.fromJson(json["batch"]),
 //     training:
 //         json["training"] == null ? null : Training.fromJson(json["training"]),
 //   );
 
 //   Map<String, dynamic> toJson() => {
-//     "id": id,
 //     "name": name,
 //     "email": email,
-//     "email_verified_at": emailVerifiedAt,
-//     "created_at": createdAt,
-//     "updated_at": updatedAt,
 //     "batch_id": batchId,
 //     "training_id": trainingId,
 //     "jenis_kelamin": jenisKelamin,
 //     "profile_photo": profilePhoto,
+//     "updated_at": updatedAt,
+//     "created_at": createdAt,
+//     "id": id,
 //     "batch": batch?.toJson(),
 //     "training": training?.toJson(),
 //   };
