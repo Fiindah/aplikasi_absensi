@@ -1,6 +1,6 @@
 import 'package:aplikasi_absensi/constant/app_color.dart';
+import 'package:aplikasi_absensi/dashboard.dart';
 import 'package:aplikasi_absensi/history_page.dart';
-import 'package:aplikasi_absensi/home_page.dart';
 import 'package:aplikasi_absensi/maps_page.dart';
 import 'package:aplikasi_absensi/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class _MainWrapperPageState extends State<MainWrapperPage> {
   late PageController _pageController;
 
   final List<Widget> _pages = [
-    const HomePage(),
+    const DashboardPage(),
     const HistoryPage(),
     const MapsPage(),
     const ProfilePage(),
