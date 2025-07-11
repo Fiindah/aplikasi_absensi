@@ -97,15 +97,15 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.neutral,
-      appBar: AppBar(
-        title: const Text(
-          'Login Aplikasi',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: AppColor.myblue2,
-        elevation: 0,
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'Login Aplikasi',
+      //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      //   ),
+      //   backgroundColor: AppColor.myblue2,
+      //   elevation: 0,
+      //   centerTitle: true,
+      // ),
       body: Center(
         child: Form(
           key: _formKey,
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                 Icon(Icons.fingerprint, size: 100, color: AppColor.myblue2),
                 const SizedBox(height: 20),
                 const Text(
-                  'Selamat Datang Kembali!',
+                  '',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,

@@ -1,6 +1,8 @@
 import 'package:aplikasi_absensi/api/endpoint.dart';
 import 'package:aplikasi_absensi/api/user_api.dart';
 import 'package:aplikasi_absensi/constant/app_color.dart';
+import 'package:aplikasi_absensi/edit_profile_page.dart';
+import 'package:aplikasi_absensi/login_page.dart'; // Import LoginPage untuk ID rute
 import 'package:aplikasi_absensi/models/profile_model.dart';
 import 'package:flutter/material.dart';
 
@@ -14,19 +16,18 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ProfileData? _userProfile;
-  bool _isLoadingProfile = true;
+  bool _isLoading = true;
   final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
-    _fetchUserProfile();
+    _loadUserProfile();
   }
 
-  // Fungsi untuk memuat data profil dari API
-  Future<void> _fetchUserProfile() async {
+  Future<void> _loadUserProfile() async {
     setState(() {
-      _isLoadingProfile = true;
+      _isLoading = true;
     });
     try {
       final response = await _authService.fetchUserProfile();
@@ -35,290 +36,311 @@ class _ProfilePageState extends State<ProfilePage> {
           _userProfile = response.data;
         });
       } else {
-        _showMessage(context, response.message);
+        _showMessage(context, response.message, color: Colors.red);
       }
     } catch (e) {
-      _showMessage(context, 'Gagal memuat profil: $e');
+      _showMessage(context, 'Gagal memuat profil: $e', color: Colors.red);
     } finally {
       setState(() {
-        _isLoadingProfile = false;
+        _isLoading = false;
       });
     }
   }
 
-  // Function to show a message using SnackBar
-  void _showMessage(BuildContext context, String message) {
+  void _showMessage(
+    BuildContext context,
+    String message, {
+    Color color = Colors.black,
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+        backgroundColor: color,
+      ),
     );
   }
 
-  // Fungsi untuk menangani logout
-  void _logout() async {
-    await _authService.logout(); // Panggil metode logout dari AuthService
-    _showMessage(context, 'Anda telah keluar.');
-    // Navigasi kembali ke halaman login atau welcome page
-    // Pastikan LoginPage diimpor jika Anda ingin navigasi ke sana
-    // Navigator.pushAndRemoveUntil(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => const LoginPage()),
-    //   (Route<dynamic> route) => false, // Hapus semua rute sebelumnya
-    // );
+  String _formatGender(String? genderCode) {
+    if (genderCode == null) return '-';
+    switch (genderCode.toUpperCase()) {
+      case 'L':
+        return 'Laki-laki';
+      case 'P':
+        return 'Perempuan';
+      default:
+        return genderCode;
+    }
+  }
+
+  // Fungsi untuk menampilkan dialog konfirmasi logout
+  Future<void> _showLogoutConfirmationDialog() async {
+    debugPrint('Menampilkan dialog konfirmasi logout.');
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Logout'),
+          content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () {
+                debugPrint('Logout dibatalkan.');
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () async {
+                debugPrint('Logout dikonfirmasi. Menutup dialog...');
+                Navigator.of(context).pop();
+                await _performLogout();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Fungsi terpisah untuk melakukan proses logout
+  Future<void> _performLogout() async {
+    debugPrint('_performLogout: Memulai proses logout...');
+    try {
+      debugPrint('_performLogout: Memanggil _authService.logout()...');
+      final bool loggedOut = await _authService.logout();
+      debugPrint(
+        '_performLogout: _authService.logout() selesai. Hasil: $loggedOut',
+      );
+
+      if (loggedOut) {
+        _showMessage(context, 'Berhasil logout!', color: Colors.green);
+        debugPrint(
+          '_performLogout: Logout berhasil. Memulai navigasi ke halaman login...',
+        );
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          LoginPage.id,
+          (route) => false,
+        );
+        debugPrint('_performLogout: Navigasi ke halaman login dipicu.');
+      } else {
+        _showMessage(context, 'Gagal logout.', color: Colors.red);
+        debugPrint('_performLogout: Logout gagal (loggedOut adalah false).');
+      }
+    } catch (e) {
+      _showMessage(
+        context,
+        'Terjadi kesalahan saat logout: $e',
+        color: Colors.red,
+      );
+      debugPrint('_performLogout: Exception saat logout: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.neutral, // Consistent background color
+      backgroundColor: AppColor.neutral,
       appBar: AppBar(
         title: const Text(
           'Profil Pengguna',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: AppColor.myblue2, // Consistent app bar color
+        backgroundColor: AppColor.myblue2,
         elevation: 0,
         centerTitle: true,
       ),
       body:
-          _isLoadingProfile
-              ? const Center(
-                child: CircularProgressIndicator(),
-              ) // Tampilkan loading indicator
-              : _userProfile == null
-              ? Center(
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Gagal memuat data profil.'),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _fetchUserProfile, // Coba lagi
-                      child: const Text('Coba Lagi'),
-                    ),
-                  ],
-                ),
-              )
-              : Column(
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(top: 20.0, bottom: 30.0),
-                    decoration: BoxDecoration(
-                      color: AppColor.myblue2, // Consistent color
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage:
-                              _userProfile?.profilePhoto != null
-                                  ? NetworkImage(
-                                    '${Endpoint.baseUrl}/${_userProfile!.profilePhoto!}',
-                                  ) // Gunakan base URL untuk foto
-                                  : const NetworkImage(
-                                    'https://placehold.co/100x100/007bff/ffffff?text=User',
-                                  ),
-                          backgroundColor: AppColor.myblue, // Consistent color
-                        ),
-                        const SizedBox(height: 15),
-                        Text(
-                          _userProfile?.name ?? 'Nama Peserta Pelatihan',
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          _userProfile?.id != null
-                              ? 'ID Peserta: ${_userProfile!.id}'
-                              : 'ID Peserta: Tidak Diketahui',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(30),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, -5),
-                          ),
-                        ],
+                    Center(
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage:
+                            _userProfile?.profilePhoto != null &&
+                                    _userProfile!.profilePhoto!.isNotEmpty
+                                ? NetworkImage(
+                                      _userProfile!.profilePhoto!.startsWith(
+                                            'http',
+                                          )
+                                          ? _userProfile!.profilePhoto!
+                                          : '${Endpoint.baseUrl}/public/${_userProfile!.profilePhoto!}',
+                                    )
+                                    as ImageProvider<Object>
+                                : const AssetImage(
+                                  'assets/images/default_profile.png',
+                                ),
+                        backgroundColor: AppColor.myblue,
                       ),
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 20.0,
-                        ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      _userProfile?.name ?? 'Nama Pengguna',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Text(
+                      _userProfile?.email ?? 'email@example.com',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start, // Align content to the start (left)
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildInfoRow(
-                              icon: Icons.email,
-                              label: 'Email',
-                              value: _userProfile?.email ?? '-',
+                              Icons.person,
+                              'Nama Lengkap',
+                              _userProfile?.name ?? '-',
                             ),
-                            _buildDivider(),
                             _buildInfoRow(
-                              icon: Icons.group,
-                              label: 'Batch',
-                              value: _userProfile?.batchKe ?? '-',
+                              Icons.email,
+                              'Email',
+                              _userProfile?.email ?? '-',
                             ),
-                            _buildDivider(),
                             _buildInfoRow(
-                              icon: Icons.school,
-                              label: 'Training',
-                              value: _userProfile?.trainingTitle ?? '-',
+                              Icons.wc,
+                              'Jenis Kelamin',
+                              _formatGender(_userProfile?.jenisKelamin),
                             ),
-                            _buildDivider(),
                             _buildInfoRow(
-                              icon: Icons.wc,
-                              label: 'Jenis Kelamin',
-                              value: _userProfile?.jenisKelamin ?? '-',
+                              Icons.group,
+                              'Batch',
+                              _userProfile?.batchKe ?? '-',
                             ),
-                            _buildDivider(),
-                            // Tambahkan informasi lain yang ingin Anda tampilkan dari profil
-                            const SizedBox(height: 20),
-                            _buildOptionTile(
-                              context,
-                              icon: Icons.edit,
-                              iconColor: AppColor.myblue, // Consistent color
-                              title: 'Ubah Profil',
-                              message: 'Navigasi ke halaman Ubah Profil',
-                              onTap: () {},
-                              // onTap: () async {
-                              //   final result = await Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder:
-                              //           (context) => const EditProfilePage(),
-                              //     ),
-                              //   );
-                              //   if (result == true) {
-                              //     _fetchUserProfile(); // Muat ulang data setelah kembali dari EditProfilePage
-                              //   }
-                              // },
-                            ),
-                            _buildDivider(),
-                            _buildOptionTile(
-                              context,
-                              icon: Icons.lock,
-                              iconColor: AppColor.orange, // Consistent color
-                              title: 'Ubah Kata Sandi',
-                              message: 'Navigasi ke halaman Ubah Kata Sandi',
-                              onTap: () {
-                                // TODO: Implement navigation to Change Password page
-                                _showMessage(
-                                  context,
-                                  'Fitur Ubah Kata Sandi belum tersedia.',
-                                );
-                              },
-                            ),
-                            _buildDivider(),
-                            _buildOptionTile(
-                              context,
-                              icon: Icons.logout,
-                              iconColor: Colors.red,
-                              title: 'Keluar',
-                              message: 'Anda telah keluar.',
-                              onTap: _logout,
+                            _buildInfoRow(
+                              Icons.school,
+                              'Training',
+                              _userProfile?.trainingTitle ?? '-',
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EditProfilePage(),
+                            ),
+                          );
+                          if (result == true) {
+                            _loadUserProfile();
+                          }
+                        },
+                        icon: const Icon(Icons.edit, color: Colors.white),
+                        label: const Text(
+                          "Ubah Profil",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColor.myblue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed:
+                            _showLogoutConfirmationDialog, // Panggil dialog konfirmasi
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        label: const Text(
+                          "Logout",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
     );
   }
 
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
+  Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: AppColor.myblue, size: 24),
           const SizedBox(width: 15),
           Expanded(
-            flex: 2,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColor.gray88,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildOptionTile(
-    BuildContext context, {
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required String message,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: iconColor, size: 28),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 17,
-          color: Colors.black87,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 18,
-        color: Colors.grey,
-      ),
-      onTap: onTap, // Langsung panggil onTap, pesan sudah di dalam onTap
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-    );
-  }
-
-  Widget _buildDivider() {
-    return const Divider(
-      indent: 0,
-      endIndent: 0,
-      thickness: 0.8,
-      color: Colors.black12,
     );
   }
 }

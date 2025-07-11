@@ -2,15 +2,14 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color myblue2 = Color(0xFF1976D2); // Biru tua
-  static const Color neutral = Color(0xFFF5F5F5); // Abu-abu muda
-  static const Color primary = Color(0xFF2196F3); // Biru standar
-  static const Color accent = Color(0xFFFFC107); // Kuning aksen
-  static const Color myblue = Color(
-    0xFF4E71FF,
-  ); // Warna biru yang Anda inginkan (0xff4e71ff)
-  static const Color gray88 = Color(0xFF757575); // Abu-abu gelap
-  static const Color orange = Color(0xFFFFA726); // Oranye
+  // static const Color myblue2 = Color(0xFF1976D2);
+  static const Color myblue2 = Color(0xFF4E71FF);
+  static const Color neutral = Color(0xFFF5F5F5);
+  static const Color primary = Color(0xFF2196F3);
+  static const Color accent = Color(0xFFFFC107);
+  static const Color myblue = Color(0xFF4E71FF);
+  static const Color gray88 = Color(0xFF757575);
+  static const Color orange = Color(0xFFFFA726);
 }
 
 // Helper function to create a MaterialColor from a single Color
