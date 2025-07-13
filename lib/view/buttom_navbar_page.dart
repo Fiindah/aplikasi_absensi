@@ -1,28 +1,27 @@
 import 'package:aplikasi_absensi/constant/app_color.dart';
-import 'package:aplikasi_absensi/dashboard_page.dart';
-import 'package:aplikasi_absensi/history_page.dart';
-import 'package:aplikasi_absensi/maps_page.dart';
-import 'package:aplikasi_absensi/profile_page.dart';
+import 'package:aplikasi_absensi/view/dashboard_page.dart';
+import 'package:aplikasi_absensi/view/history_page.dart';
+import 'package:aplikasi_absensi/view/maps_page.dart';
+import 'package:aplikasi_absensi/view/profile_page/profile_page.dart';
 import 'package:flutter/material.dart';
 
-class MainWrapperPage extends StatefulWidget {
-  const MainWrapperPage({super.key});
-  static const String id = "/main_wrapper_page";
+class ButtonNavbarPage extends StatefulWidget {
+  const ButtonNavbarPage({super.key});
+  static const String id = "/butttom_navbar_page";
 
   @override
-  State<MainWrapperPage> createState() => _MainWrapperPageState();
+  State<ButtonNavbarPage> createState() => _ButtonNavbarPageState();
 }
 
-class _MainWrapperPageState extends State<MainWrapperPage> {
+class _ButtonNavbarPageState extends State<ButtonNavbarPage> {
   int _selectedIndex = 0;
   late PageController _pageController;
 
   final List<Widget> _pages = [
-    const DashboardPage(),
-
-    const MapsPage(),
-    const HistoryPage(),
-    const ProfilePage(),
+    DashboardPage(),
+    MapsPage(),
+    HistoryPage(),
+    ProfilePage(),
   ];
 
   @override

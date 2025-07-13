@@ -1,8 +1,9 @@
 import 'package:aplikasi_absensi/api/endpoint.dart';
 import 'package:aplikasi_absensi/api/user_api.dart';
 import 'package:aplikasi_absensi/constant/app_color.dart';
-import 'package:aplikasi_absensi/edit_profile_page.dart';
-import 'package:aplikasi_absensi/login_page.dart'; // Import LoginPage untuk ID rute
+import 'package:aplikasi_absensi/view/profile_page/edit_profile_page.dart';
+import 'package:aplikasi_absensi/helper/share_pref.dart';
+import 'package:aplikasi_absensi/view/auth_page/login_page.dart'; // Import LoginPage untuk ID rute
 import 'package:aplikasi_absensi/models/profile_model.dart';
 import 'package:flutter/material.dart';
 
@@ -119,20 +120,23 @@ class _ProfilePageState extends State<ProfilePage> {
         '_performLogout: _authService.logout() selesai. Hasil: $loggedOut',
       );
 
+      // Hapus data lokal dari SharedPreferences
+      await SharedPreferencesUtil.clearAllData();
+      debugPrint('_performLogout: SharedPreferences telah dibersihkan.');
+
       if (loggedOut) {
         _showMessage(context, 'Berhasil logout!', color: Colors.green);
         debugPrint(
-          '_performLogout: Logout berhasil. Memulai navigasi ke halaman login...',
+          '_performLogout: Logout berhasil. Navigasi ke halaman login...',
         );
         Navigator.pushNamedAndRemoveUntil(
           context,
           LoginPage.id,
           (route) => false,
         );
-        debugPrint('_performLogout: Navigasi ke halaman login dipicu.');
       } else {
         _showMessage(context, 'Gagal logout.', color: Colors.red);
-        debugPrint('_performLogout: Logout gagal (loggedOut adalah false).');
+        debugPrint('_performLogout: Logout gagal (loggedOut == false).');
       }
     } catch (e) {
       _showMessage(

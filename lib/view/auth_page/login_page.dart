@@ -1,8 +1,8 @@
 import 'package:aplikasi_absensi/api/user_api.dart';
 import 'package:aplikasi_absensi/constant/app_color.dart';
 import 'package:aplikasi_absensi/helper/share_pref.dart';
-import 'package:aplikasi_absensi/main_wrapper_page.dart';
-import 'package:aplikasi_absensi/register_page.dart';
+import 'package:aplikasi_absensi/view/buttom_navbar_page.dart';
+import 'package:aplikasi_absensi/view/auth_page/register_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
         // Arahkan ke Dashboard
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainWrapperPage()),
+          MaterialPageRoute(builder: (context) => const ButtonNavbarPage()),
         );
       } else {
         // Login gagal, tampilkan pesan error dari API
